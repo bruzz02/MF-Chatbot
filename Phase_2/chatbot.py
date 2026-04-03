@@ -19,11 +19,17 @@ load_dotenv()
 def get_relevant_context(query):
     """Retrieve the most relevant fund data from ChromaDB."""
     api_key = os.getenv("OPENROUTER_API_KEY")
+    
+    # Fallback to streamlit secrets if os.getenv fails (for deployment)
     if not api_key:
-        return None, "API Key not found."
+        try:
+            import streamlit as st
+            api_key = st.secrets["OPENROUTER_API_KEY"]
+        except (ImportError, KeyError):
+            return None, "API Key not found in environment or Streamlit secrets."
 
     client = OpenAI(
-        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        base_url=os.getenv("OPENROUTER_BASE_URL", st.secrets.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1") if 'st' in locals() else "https://openrouter.ai/api/v1"),
         api_key=api_key,
     )
 
@@ -72,8 +78,16 @@ def ask_chatbot(query):
         return
 
     api_key = os.getenv("OPENROUTER_API_KEY")
+    # Fallback to streamlit secrets if os.getenv fails (for deployment)
+    if not api_key:
+        try:
+            import streamlit as st
+            api_key = st.secrets["OPENROUTER_API_KEY"]
+        except (ImportError, KeyError):
+            pass # We'll let the error happen later if api_key is still none
+
     client = OpenAI(
-        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        base_url=os.getenv("OPENROUTER_BASE_URL", st.secrets.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1") if 'st' in locals() else "https://openrouter.ai/api/v1"),
         api_key=api_key,
     )
 

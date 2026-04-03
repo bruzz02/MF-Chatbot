@@ -37,16 +37,17 @@ def pre_process_fund_data(data_path):
 
 def ingest_data():
     api_key = os.getenv("OPENROUTER_API_KEY")
-    if not api_key or api_key == "your_openrouter_api_key_here":
-        print("Error: Please set your OPENROUTER_API_KEY in Phase_2/.env")
-        return
+    # Fallback to streamlit secrets if os.getenv fails (for deployment)
+    if not api_key:
+        try:
+            import streamlit as st
+            api_key = st.secrets["OPENROUTER_API_KEY"]
+        except (ImportError, KeyError):
+            pass
 
-    # Initialize OpenRouter Client for Embeddings (or use local if preferred)
-    # For simplicity, we'll use OpenAI-compatible embeddings if supported, 
-    # but many users prefer local embeddings for cost/speed.
-    # However, since we are using OpenRouter, let's assume the user wants cloud-based.
+    # Initialize OpenRouter Client for Embeddings
     client = OpenAI(
-        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        base_url=os.getenv("OPENROUTER_BASE_URL", st.secrets.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1") if 'st' in locals() else "https://openrouter.ai/api/v1"),
         api_key=api_key,
     )
 

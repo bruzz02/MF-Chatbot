@@ -4,6 +4,8 @@ beautifulsoup4
 chromadb
 openai
 python-dotenv
+langchain
+langchain-community
 langchain-openai
 streamlit
 pytest

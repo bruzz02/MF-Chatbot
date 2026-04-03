@@ -12,6 +12,18 @@ if phase2_path not in sys.path:
     sys.path.append(phase2_path)
 
 from Phase_2.chatbot import ask_chatbot
+from Phase_2.ingestion import ingest_data
+
+# Auto-initialize ChromaDB if missing (required for Cloud Deployment)
+db_path = os.path.join(root_path, "Phase_2", "chroma_db")
+if not os.path.exists(db_path):
+    with st.spinner("Initializing Database for the first time..."):
+        try:
+            ingest_data()
+            st.success("Database initialized successfully!")
+        except Exception as e:
+            st.error(f"Failed to initialize database: {e}")
+            st.stop()
 
 # Page Config
 st.set_page_config(page_title="MF Chatbot", page_icon="💬", layout="wide")
