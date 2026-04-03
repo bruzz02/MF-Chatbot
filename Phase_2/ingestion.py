@@ -14,9 +14,11 @@ def get_config(key, default=None):
         return val
     try:
         import streamlit as st
+        # Directly access st.secrets within try block to handle StreamlitSecretNotFoundError
         if key in st.secrets:
             return st.secrets[key]
-    except (ImportError, KeyError):
+    except Exception:
+        # Catch all secrets errors locally (this handles the StreamlitSecretNotFoundError)
         pass
     return default
 
