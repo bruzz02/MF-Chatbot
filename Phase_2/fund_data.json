@@ -1,0 +1,72 @@
+[
+    {
+        "URL": "https://www.indmoney.com/mutual-funds/kotak-large-cap-direct-growth-3941",
+        "Fund Name": "Kotak Large Cap Fund",
+        "NAV_Date": "03 April 2026",
+        "NAV": "₹606.91",
+        "AUM": "10925 Cr.",
+        "Expense ratio": "0.63%",
+        "Min Lumpsum/SIP": "₹100/₹100",
+        "Lock In": "No Lock-in",
+        "Risk": " Risk",
+        "Benchmark": "and category average",
+        "Inception Date": "1 January, 2013\nMin Lumpsum",
+        "Exit Load": "1.0%"
+    },
+    {
+        "URL": "https://www.indmoney.com/mutual-funds/kotak-midcap-fund-direct-growth-3945",
+        "Fund Name": "Kotak Midcap Fund",
+        "NAV_Date": "03 April 2026",
+        "NAV": "₹144.66",
+        "AUM": "61694 Cr.",
+        "Expense ratio": "0.38%",
+        "Min Lumpsum/SIP": "₹100/₹100",
+        "Lock In": "No Lock-in",
+        "Risk": " Risk",
+        "Benchmark": "and category average",
+        "Inception Date": "1 January, 2013\nMin Lumpsum",
+        "Exit Load": "1.0%"
+    },
+    {
+        "URL": "https://www.indmoney.com/mutual-funds/kotak-small-cap-direct-growth-3979",
+        "Fund Name": "Kotak Small Cap Fund",
+        "NAV_Date": "03 April 2026",
+        "NAV": "₹265.00",
+        "AUM": "16871 Cr.",
+        "Expense ratio": "0.55%",
+        "Min Lumpsum/SIP": "₹100/₹100",
+        "Lock In": "No Lock-in",
+        "Risk": " Risk",
+        "Benchmark": "and category average",
+        "Inception Date": "1 January, 2013\nMin Lumpsum",
+        "Exit Load": "1.0%"
+    },
+    {
+        "URL": "https://www.indmoney.com/mutual-funds/kotak-multicap-fund-direct-growth-1039821",
+        "Fund Name": "Kotak Multicap Fund",
+        "NAV_Date": "03 April 2026",
+        "NAV": "₹19.08",
+        "AUM": "23886 Cr.",
+        "Expense ratio": "0.45%",
+        "Min Lumpsum/SIP": "₹100/₹100",
+        "Lock In": "No Lock-in",
+        "Risk": " Risk",
+        "Benchmark": "and category average",
+        "Inception Date": "29 September, 2021\nMin Lumpsum",
+        "Exit Load": "1.0%"
+    },
+    {
+        "URL": "https://www.indmoney.com/mutual-funds/kotak-elss-tax-saver-scheme-growth-direct-2565",
+        "Fund Name": "Kotak ELSS Tax Saver Scheme Fund",
+        "NAV_Date": "03 April 2026",
+        "NAV": "₹123.09",
+        "AUM": "6355 Cr.",
+        "Expense ratio": "0.62%",
+        "Min Lumpsum/SIP": "₹500/₹500",
+        "Lock In": "3 Years\nTurnOver\n20",
+        "Risk": " Risk",
+        "Benchmark": "and category average",
+        "Inception Date": "1 January, 2013\nMin Lumpsum",
+        "Exit Load": "0%"
+    }
+]

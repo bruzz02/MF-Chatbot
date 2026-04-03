@@ -1,0 +1,47 @@
+name: Daily Mutual Fund Update
+
+on:
+  schedule:
+    - cron: '30 3 * * *' # 3:30 AM UTC = 9:00 AM IST
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-navs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install chromium
+
+      - name: Update NAV Data
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_BASE_URL: ${{ secrets.OPENROUTER_BASE_URL }}
+        run: python update_navs.py
+
+      - name: Re-Ingest Data to ChromaDB
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_BASE_URL: ${{ secrets.OPENROUTER_BASE_URL }}
+        run: python Phase_2/ingestion.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Phase_1/fund_data.json Phase_2/fund_data.json Phase_2/chroma_db/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update NAVs and Vector DB [skip ci]" && git push)

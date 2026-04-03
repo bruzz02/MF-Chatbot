@@ -1,0 +1,12 @@
+playwright
+pytest-playwright
+beautifulsoup4
+chromadb
+openai
+python-dotenv
+langchain-openai
+streamlit
+pytest
+ragas
+pandas
+rank_bm25

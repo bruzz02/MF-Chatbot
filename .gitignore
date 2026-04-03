@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+venv/
+env/
+.pytest_cache/
+chroma_db/
+Chromadb/
+*.log
+debug_content.html
+test_output.txt
+.DS_Store
