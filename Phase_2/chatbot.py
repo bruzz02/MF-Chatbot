@@ -16,20 +16,27 @@ from Security_Privacy.sanitizer import sanitize_user_input, check_for_injection
 # Load environment variables
 load_dotenv()
 
+def get_config(key, default=None):
+    """Fetch configuration from environment variables or Streamlit secrets."""
+    val = os.getenv(key)
+    if val:
+        return val
+    try:
+        import streamlit as st
+        if key in st.secrets:
+            return st.secrets[key]
+    except (ImportError, KeyError):
+        pass
+    return default
+
 def get_relevant_context(query):
     """Retrieve the most relevant fund data from ChromaDB."""
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    
-    # Fallback to streamlit secrets if os.getenv fails (for deployment)
+    api_key = get_config("OPENROUTER_API_KEY")
     if not api_key:
-        try:
-            import streamlit as st
-            api_key = st.secrets["OPENROUTER_API_KEY"]
-        except (ImportError, KeyError):
-            return None, "API Key not found in environment or Streamlit secrets."
+        return None, "API Key (OPENROUTER_API_KEY) not found in environment or secrets."
 
     client = OpenAI(
-        base_url=os.getenv("OPENROUTER_BASE_URL", st.secrets.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1") if 'st' in locals() else "https://openrouter.ai/api/v1"),
+        base_url=get_config("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         api_key=api_key,
     )
 
@@ -42,7 +49,7 @@ def get_relevant_context(query):
         # Generate query embedding
         response = client.embeddings.create(
             input=[query],
-            model=os.getenv("EMBEDDING_MODEL_NAME", "text-embedding-004")
+            model=get_config("EMBEDDING_MODEL_NAME", "openai/text-embedding-3-small")
         )
         query_embedding = response.data[0].embedding
 
@@ -54,9 +61,9 @@ def get_relevant_context(query):
 
         if results["documents"] and results["documents"][0]:
             return results["documents"][0][0], None
-        return None, "No relevant data found."
+        return None, "No relevant data was found in the database. You may need to rebuild your search index."
     except Exception as e:
-        return None, str(e)
+        return None, f"Database/Embedding Error: {str(e)}"
 
 def ask_chatbot(query):
     """Generate a RAG response for the query with security filtering."""
@@ -74,20 +81,11 @@ def ask_chatbot(query):
     context, error = get_relevant_context(query)
     
     if error:
-        print(f"Error retrieving context: {error}")
-        return
+        return f"System Alert: {error}"
 
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    # Fallback to streamlit secrets if os.getenv fails (for deployment)
-    if not api_key:
-        try:
-            import streamlit as st
-            api_key = st.secrets["OPENROUTER_API_KEY"]
-        except (ImportError, KeyError):
-            pass # We'll let the error happen later if api_key is still none
-
+    api_key = get_config("OPENROUTER_API_KEY")
     client = OpenAI(
-        base_url=os.getenv("OPENROUTER_BASE_URL", st.secrets.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1") if 'st' in locals() else "https://openrouter.ai/api/v1"),
+        base_url=get_config("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         api_key=api_key,
     )
 

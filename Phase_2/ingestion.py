@@ -7,6 +7,19 @@ from openai import OpenAI
 # Load environment variables
 load_dotenv()
 
+def get_config(key, default=None):
+    """Fetch configuration from environment variables or Streamlit secrets."""
+    val = os.getenv(key)
+    if val:
+        return val
+    try:
+        import streamlit as st
+        if key in st.secrets:
+            return st.secrets[key]
+    except (ImportError, KeyError):
+        pass
+    return default
+
 def pre_process_fund_data(data_path):
     """Load and format fund data for embedding."""
     with open(data_path, "r", encoding="utf-8") as f:
@@ -36,18 +49,14 @@ def pre_process_fund_data(data_path):
     return formatted_data
 
 def ingest_data():
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    # Fallback to streamlit secrets if os.getenv fails (for deployment)
+    api_key = get_config("OPENROUTER_API_KEY")
     if not api_key:
-        try:
-            import streamlit as st
-            api_key = st.secrets["OPENROUTER_API_KEY"]
-        except (ImportError, KeyError):
-            pass
+        print("Error: OPENROUTER_API_KEY not found in environment or secrets.")
+        return
 
     # Initialize OpenRouter Client for Embeddings
     client = OpenAI(
-        base_url=os.getenv("OPENROUTER_BASE_URL", st.secrets.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1") if 'st' in locals() else "https://openrouter.ai/api/v1"),
+        base_url=get_config("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         api_key=api_key,
     )
 
@@ -69,7 +78,7 @@ def ingest_data():
         try:
             response = client.embeddings.create(
                 input=[fund["text"]],
-                model=os.getenv("EMBEDDING_MODEL_NAME", "text-embedding-004")
+                model=get_config("EMBEDDING_MODEL_NAME", "openai/text-embedding-3-small")
             )
             embedding = response.data[0].embedding
 
